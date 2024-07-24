@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Игра</title>
+  <link rel="icon" href="images/Aksu_Favicon.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="main.html">Аксу Гид</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="main.html">Главная</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="attractions.html">Достопримечательности</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="restaurants.html">Кафе и рестораны</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="game.html">Интерактивная Игра</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="container game-container text-center">
+    <h1>Один лишний</h1>
+    <p>Перетащите лишний элемент в Корзину</p>
+    <div class="row">
+      <div class="col-md-6">
+        <div class="draggable-container">
+          <div class="draggable" draggable="true" id="item1">Памятник жертвам репрессий</div>
+          <div class="draggable" draggable="true" id="item2">Музей под открытым небом</div>
+          <div class="draggable" draggable="true" id="item3">Стела независимости</div>
+          <div class="draggable" draggable="true" id="item4">Кольцо мира</div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="droppable-container">
+          <div class="droppable" id="category1">Корзина</div>
+        </div>
+      </div>
+    </div>
+    <div id="message"></div>
+    <button id="resetButton" style="display: none;">Начать заново</button>
+  </div>
+
+  <footer class="text-center text-lg-start mt-5 bg-light text-dark">
+    <div class="container p-4">
+      <p class="text-center">Разработчик: Ваше Имя</p>
+    </div>
+  </footer>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const draggables = document.querySelectorAll('.draggable');
+      const droppable = document.querySelector('.droppable');
+      const message = document.getElementById('message');
+      const resetButton = document.getElementById('resetButton');
+
+      draggables.forEach(draggable => {
+        draggable.addEventListener('dragstart', dragStart);
+      });
+
+      droppable.addEventListener('dragover', dragOver);
+      droppable.addEventListener('drop', drop);
+
+      resetButton.addEventListener('click', resetGame);
+
+      function dragStart(e) {
+        e.dataTransfer.setData('text/plain', e.target.id);
+      }
+
+      function dragOver(e) {
+        e.preventDefault();
+      }
+
+      function drop(e) {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text');
+        const draggable = document.getElementById(id);
+
+        if (droppable.contains(draggable)) {
+          message.textContent = 'Этот элемент уже в корзине';
+          return;
+        }
+
+        droppable.appendChild(draggable);
+
+        if (id === 'item3') { // 'Стела независимости'
+          message.textContent = 'Правильно!';
+        } else {
+          message.textContent = 'Неправильно, попробуй еще.';
+        }
+
+        resetButton.style.display = 'block';
+      }
+
+      function resetGame() {
+        const draggableContainer = document.querySelector('.draggable-container');
+        draggables.forEach(draggable => {
+          draggableContainer.appendChild(draggable);
+        });
+        message.textContent = '';
+        resetButton.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>
